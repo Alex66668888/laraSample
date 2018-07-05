@@ -44,3 +44,6 @@ heroku  https://git.heroku.com/mysterious-waters-94715.git (push)
 origin  git@github.com:Alex66668888/sample.git (fetch)
 origin  git@github.com:Alex66668888/sample.git (push)
 
+本地项目关联heroku的远程库
+heroku git:remote -a mysterious-waters-94715
+参考文献地址：https://devcenter.heroku.com/articles/git#tracking-your-app-in-git
