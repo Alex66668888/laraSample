@@ -13,6 +13,7 @@ class UsersController extends Controller{
   }
 
   public function show(User $user){
+    //将用户对象 $user 通过 compact 方法转化为一个关联数组
     return view('users.show', compact('user'));
   }
 
@@ -41,6 +42,7 @@ class UsersController extends Controller{
 
     //显示提示信息
     session()->flash('success','欢迎，您将在这里开启一段新的旅程~');
+    //等同于 return redirect()->route('users.show', [$user->id]);
     return redirect()->route('users.show',[$user]);
 
 

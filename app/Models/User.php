@@ -9,6 +9,10 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+    /**
+     * 指定与模型关联的表，默认情况下可不指定
+     * @var string
+     */
     protected $table = 'users';
 
     /**
