@@ -19,7 +19,11 @@ Route::get('/', 'StaticPagesController@home')->name('home');
 Route::get('/help', 'StaticPagesController@help')->name('help');
 Route::get('/about', 'StaticPagesController@about')->name('about');
 
+//显示注册页面
 Route::get('signup', 'UsersController@create')->name('signup');
+//邮件发送
+Route::get('signup/confirm/{token}', 'UsersController@confirmEmail')->name('confirm_email');
+
 // 使用 resource 方法定义用户资源路由
 Route::resource('users', 'UsersController');
 

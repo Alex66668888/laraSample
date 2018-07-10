@@ -13,6 +13,7 @@ use Faker\Generator as Faker;
 |
 */
 
+//第一个参数为指定的 Eloquent 模型类，第二个参数为一个闭包函数
 $factory->define(App\Models\User::class, function (Faker $faker) {
     $date_time = $faker->date . ' ' . $faker->time;
     static $password;
@@ -21,6 +22,7 @@ $factory->define(App\Models\User::class, function (Faker $faker) {
         'name' => $faker->name,
         'email' => $faker->safeEmail,
         'is_admin' => false,
+        'activated' => true,
         'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
         'created_at' => $date_time,

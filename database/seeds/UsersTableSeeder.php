@@ -17,10 +17,11 @@ class UsersTableSeeder extends Seeder
 
       //对第一位用户的信息进行了更新，方便后面我们使用此账号登录
       $user = User::find(1);
-      $user->name = 'Aufree';
-      $user->email = 'aufree@yousails.com';
-      $user->password = bcrypt('password');
+      $user->name = 'Alex';
+      $user->email = '1414818093@qq.com';
+      $user->password = bcrypt('123456');
       $user->is_admin = true;
+      $user->activated = true;
       $user->save();
 
 

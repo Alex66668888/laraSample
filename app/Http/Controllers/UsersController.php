@@ -6,13 +6,14 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Models\User;
 use Auth;
+use Mail;
 
 class UsersController extends Controller{
 
   public function __construct(){
     $this->middleware('auth',[
       // 除了show、create、store方法外，其他都需要Auth中间件过滤
-      'except' => ['show', 'create', 'store', 'index']
+      'except' => ['show', 'create', 'store', 'index', 'confirmEmail']
     ]);
     $this->middleware('guest',[
       //只让未登录用户访问注册页面
@@ -68,14 +69,59 @@ class UsersController extends Controller{
     ]);
 
     //用户注册成功自动登录
-    Auth::login($user);
+    //Auth::login($user);
 
     //显示提示信息
-    session()->flash('success','欢迎，您将在这里开启一段新的旅程~');
+    //session()->flash('success','欢迎，您将在这里开启一段新的旅程~');
     //等同于 return redirect()->route('users.show', [$user->id]);
-    return redirect()->route('users.show',[$user]);
+    //return redirect()->route('users.show',[$user]);
 
+    $this->sendEmailConfirmationTo($user);
+    session()->flash('success', '验证邮件已发送到你的注册邮箱上，请注意查收。');
+    return redirect('/');
 
+  }
+
+  /**
+   * 发送邮件给指定用户
+   * @param  [type] $user 用户信息
+   * @return [type]       [description]
+   */
+  public function sendEmailConfirmationTo($user){
+    //视图模板名称
+    $view = 'emails.confirm';
+    //要传递给该视图的数据数组
+    $data = compact('user');
+    //邮件消息的发送者邮箱
+    $from = '957935939@qq.com';
+    //邮件消息的发送者
+    $name = 'Aufree';
+    //邮件接收地址
+    $to = $user->email;
+    //邮件主题
+    $subject = "感谢注册 Sample 应用！请确认你的邮箱。";
+
+    Mail::send($view, $data, function ($message) use ($from, $name, $to, $subject) {
+        $message->from($from, $name)->to($to)->subject($subject);
+    });
+  }
+
+  /**
+   * 邮件激活
+   * @param  [type] $token 用户的激活令牌
+   * @return [type]        [description]
+   */
+  public function confirmEmail($token){
+    //使用 firstOrFail 方法来取出第一个用户，在查询不到指定用户时将返回一个 404 响应
+    $user = User::where('activation_token', $token)->firstOrFail();
+
+    $user->activated = true;
+    $user->activation_token = null;
+    $user->save();
+
+    Auth::login($user);
+    session()->flash('success', '恭喜你，激活成功！');
+    return redirect()->route('users.show', [$user]);
   }
 
   /**
@@ -127,6 +173,7 @@ class UsersController extends Controller{
    * @return [type]       [description]
    */
   public function destroy(User $user){
+    //使用 authorize 方法来对删除操作进行授权验证
     $this->authorize('destroy', $user);
     $user->delete();
     session()->flash('success','成功删除用户！');
