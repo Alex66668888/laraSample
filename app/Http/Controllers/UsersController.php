@@ -87,24 +87,38 @@ class UsersController extends Controller{
    * @param  [type] $user 用户信息
    * @return [type]       [description]
    */
-  public function sendEmailConfirmationTo($user){
-    //视图模板名称
+  // public function sendEmailConfirmationTo($user){
+  //   //视图模板名称
+  //   $view = 'emails.confirm';
+  //   //要传递给该视图的数据数组
+  //   $data = compact('user');
+  //   //邮件消息的发送者邮箱
+  //   $from = '957935939@qq.com';
+  //   //邮件消息的发送者
+  //   $name = 'Aufree';
+  //   //邮件接收地址
+  //   $to = $user->email;
+  //   //邮件主题
+  //   $subject = "感谢注册 Sample 应用！请确认你的邮箱。";
+
+  //   Mail::send($view, $data, function ($message) use ($from, $name, $to, $subject) {
+  //       $message->from($from, $name)->to($to)->subject($subject);
+  //   });
+  // }
+
+  //已经在.ENV配置文件中设有邮件配置，因此就不需要以上方法
+  protected function sendEmailConfirmationTo($user){
     $view = 'emails.confirm';
-    //要传递给该视图的数据数组
     $data = compact('user');
-    //邮件消息的发送者邮箱
-    $from = '957935939@qq.com';
-    //邮件消息的发送者
-    $name = 'Aufree';
-    //邮件接收地址
     $to = $user->email;
-    //邮件主题
     $subject = "感谢注册 Sample 应用！请确认你的邮箱。";
 
-    Mail::send($view, $data, function ($message) use ($from, $name, $to, $subject) {
-        $message->from($from, $name)->to($to)->subject($subject);
+    Mail::send($view, $data, function ($message) use ($to, $subject) {
+        $message->to($to)->subject($subject);
     });
   }
+
+
 
   /**
    * 邮件激活
