@@ -44,8 +44,14 @@ class UsersController extends Controller{
   //会匹配路由片段中的 {user}，这样，Laravel 会自动注入与请求 URI 中传入的 ID 对应
   //的用户模型实例。
   public function show(User $user){
+
+    //取出一个用户的所有微博
+    $statuses = $user->statuses()
+                     ->orderBy('created_at', 'desc')
+                     ->paginate(5);
+
     //将用户对象 $user 通过 compact 方法转化为一个关联数组
-    return view('users.show', compact('user'));
+    return view('users.show', compact('user', 'statuses'));
   }
 
   /**
