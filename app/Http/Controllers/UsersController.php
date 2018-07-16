@@ -11,14 +11,17 @@ use Mail;
 class UsersController extends Controller{
 
   public function __construct(){
+
     $this->middleware('auth',[
-      // 除了show、create、store方法外，其他都需要Auth中间件过滤
+      // 除了以下几种方法外，其他都需要Auth中间件过滤
       'except' => ['show', 'create', 'store', 'index', 'confirmEmail']
     ]);
+
     $this->middleware('guest',[
       //只让未登录用户访问注册页面
       'only' => ['create']
     ]);
+
   }
 
   /**
@@ -198,6 +201,28 @@ class UsersController extends Controller{
     $user->delete();
     session()->flash('success','成功删除用户！');
     return back();
+  }
+
+  /**
+   * 显示用户关注人列表
+   * @param  User   $user [description]
+   * @return [type]       [description]
+   */
+  public function followings(User $user){
+    $users = $user->followings()->paginate(30);
+    $title = '关注的人';
+    return view('users.show_follow', compact('users', 'title'));
+  }
+
+  /**
+   * 用户显示粉丝列表
+   * @param  User   $user [description]
+   * @return [type]       [description]
+   */
+  public function followers(User $user){
+    $users = $user->followers()->paginate(30);
+    $title = '粉丝';
+    return view('users.show_follow', compact('users', 'title'));
   }
 
 
